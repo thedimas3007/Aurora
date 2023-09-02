@@ -38,3 +38,9 @@ out/
 
 ### Logs ###
 *.log
+
+### Configs ###
+database.json
+
+### Generated code ###
+gen/
