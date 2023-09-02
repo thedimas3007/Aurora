@@ -43,9 +43,10 @@ repositories {
 }
 
 ext {
-    springVersion = "3.1.3"
-    mysqlVersion = "8.0.30"
-    jooqVersion = "3.17.0"
+    springVersion = '3.1.3'
+    mysqlVersion = '8.0.30'
+    jooqVersion = '3.17.0'
+    hikariVersion = '5.0.1'
 }
 
 dependencies {
@@ -57,6 +58,7 @@ dependencies {
     developmentOnly "org.springframework.boot:spring-boot-devtools:$springVersion"
 
     implementation "org.jooq:jooq:$jooqVersion"
+    implementation "com.zaxxer:HikariCP:$hikariVersion"
     runtimeOnly "mysql:mysql-connector-java:$mysqlVersion"
 
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springVersion"
@@ -118,6 +120,10 @@ task codegen {
                         )
                         .withGenerate(new Generate()
                                 .withFluentSetters(true)
+                                .withPojos(true)
+                                .withPojosEqualsAndHashCode(true)
+                                .withPojosToString(true)
+                                .withDaos(true)
                         )
                 )
 

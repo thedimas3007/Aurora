@@ -1,21 +1,31 @@
 package thedimas.aurora;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import thedimas.aurora.database.DatabaseService;
+import thedimas.aurora.database.gen.tables.pojos.Users;
+import thedimas.aurora.database.gen.tables.records.UsersRecord;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ClientController {
+    @Autowired
+    private DatabaseService database;
+
     @GetMapping("/login")
     public String login() {
         return "WIP";
     }
 
-    @PostMapping("/register")
-    public String register() {
-        return "WIP";
+    @GetMapping("/register")
+    public Users register(
+            @RequestParam(name = "name") String name,
+            @RequestParam(name = "username") String username,
+            @RequestParam(name = "password") String password
+    ) {
+        return database.createUser(name, username, password);
     }
 }
