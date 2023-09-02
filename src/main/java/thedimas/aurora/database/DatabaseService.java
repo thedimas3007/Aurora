@@ -1,9 +1,7 @@
 package thedimas.aurora.database;
 
 import lombok.extern.apachecommons.CommonsLog;
-import org.jooq.Configuration;
 import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thedimas.aurora.database.gen.Tables;
@@ -12,7 +10,6 @@ import thedimas.aurora.database.gen.tables.pojos.Users;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 @Service
 @CommonsLog
@@ -22,32 +19,16 @@ public class DatabaseService {
     private final MessagesDao messagesDao;
     private final TokensDao tokensDao;
     private final UsersDao usersDao;
-    private final Configuration jooqConfiguration;
+    private final DSLContext context;
 
     @Autowired
-    public DatabaseService(
-            ChatsDao chatsDao,
-            MessagesDao messagesDao,
-            TokensDao tokensDao,
-            UsersDao usersDao,
-            Configuration jooqConfiguration) {
+    public DatabaseService(ChatsDao chatsDao, MessagesDao messagesDao, TokensDao tokensDao, UsersDao usersDao, DSLContext context) {
         this.chatsDao = chatsDao;
         this.messagesDao = messagesDao;
         this.tokensDao = tokensDao;
         this.usersDao = usersDao;
-        this.jooqConfiguration = jooqConfiguration;
+        this.context = context;
     }
-
-    // region raw
-    /**
-     * Retrieves the {@link DSLContext} for database queries.
-     *
-     * @return The DSL context.
-     */
-    public DSLContext getContext() {
-        return DSL.using(jooqConfiguration);
-    }
-    // endregion
 
     /**
      * Checks if a user with the given username exists in the database.
@@ -56,19 +37,24 @@ public class DatabaseService {
      * @return {@code true} if a user with the specified username exists, otherwise {@code false}.
      */
     public boolean userExists(String username) {
-        return getContext().fetchExists(Tables.USERS, Tables.USERS.USERNAME.eq(username));
+        return context.fetchExists(Tables.USERS, Tables.USERS.USERNAME.eq(username));
     }
 
+    /**
+     * Creates a new user with the provided name, username, and password.
+     * The password is hashed using the SHA-256 algorithm before storing it.
+     *
+     * @param name     The name of the user.
+     * @param username The username of the user.
+     * @param password The user's password in plaintext.
+     * @return The newly created {@link Users} instance.
+     */
     public Users createUser(String name, String username, String password) {
         Users user = new Users().setName(name)
                 .setUsername(username)
                 .setPassword(sha256(password));
         usersDao.insert(user);
         return user;
-    }
-
-    public List<Users> getUsers() {
-        return usersDao.findAll();
     }
 
     /**

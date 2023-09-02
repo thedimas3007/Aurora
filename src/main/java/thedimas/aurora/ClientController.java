@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thedimas.aurora.database.DatabaseService;
-import thedimas.aurora.database.gen.tables.pojos.Users;
 
 @RestController
 @RequestMapping(value = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
