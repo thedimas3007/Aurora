@@ -1,4 +1,4 @@
-package thedimas.aurora.database;
+package thedimas.aurora.database.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,7 +12,7 @@ import thedimas.aurora.JsonPropertySourceFactory;
         factory = JsonPropertySourceFactory.class)
 @ConfigurationProperties
 @Data
-class DatabaseConfig {
+public class DatabaseConfig {
     private String host, schema, username, password;
 
     /**

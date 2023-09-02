@@ -1,7 +1,9 @@
 package thedimas.aurora;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thedimas.aurora.database.DatabaseService;
 import thedimas.aurora.database.gen.tables.pojos.Users;
@@ -18,11 +20,16 @@ public class ClientController {
     }
 
     @GetMapping("/register")
-    public Users register(
+    public ResponseEntity<?> register(
             @RequestParam(name = "name") String name,
             @RequestParam(name = "username") String username,
             @RequestParam(name = "password") String password
     ) {
-        return database.createUser(name, username, password);
+        if (database.userExists(username)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Username is already in use");
+        }
+
+        return ResponseEntity.ok(database.createUser(name, username, password));
     }
 }

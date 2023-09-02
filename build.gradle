@@ -124,6 +124,8 @@ tasks.register('codegen') {
                                 .withPojosEqualsAndHashCode(true)
                                 .withPojosToString(true)
                                 .withDaos(true)
+                                .withSpringDao(true)
+                                .withSpringAnnotations(true)
                         )
                 )
 
