@@ -1,4 +1,4 @@
-package thedimas.aurora;
+package thedimas.aurora.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;

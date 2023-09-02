@@ -1,11 +1,13 @@
-package thedimas.aurora;
+package thedimas.aurora.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thedimas.aurora.database.DatabaseService;
+import thedimas.aurora.database.gen.tables.pojos.Tokens;
 
 @RestController
 @RequestMapping(value = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -14,8 +16,11 @@ public class ClientController {
     private DatabaseService database;
 
     @GetMapping("/login")
-    public String login() {
-        return "WIP";
+    public Tokens login(
+            @RequestParam(name = "user") int userId,
+            HttpServletRequest request
+    ) {
+        return database.createToken(userId, request.getRemoteAddr());
     }
 
     @GetMapping("/register")

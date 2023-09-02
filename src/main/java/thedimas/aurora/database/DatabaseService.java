@@ -6,10 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thedimas.aurora.database.gen.Tables;
 import thedimas.aurora.database.gen.tables.daos.*;
+import thedimas.aurora.database.gen.tables.pojos.Tokens;
 import thedimas.aurora.database.gen.tables.pojos.Users;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.UUID;
 
 @Service
 @CommonsLog
@@ -30,6 +34,7 @@ public class DatabaseService {
         this.context = context;
     }
 
+    // region users
     /**
      * Checks if a user with the given username exists in the database.
      *
@@ -41,15 +46,19 @@ public class DatabaseService {
     }
 
     /**
-     * Creates a new user with the provided name, username, and password.
-     * The password is hashed using the SHA-256 algorithm before storing it.
+     * Creates a new user with the provided name, username, and password, and stores it in the database.
+     * The password is securely hashed using the SHA-256 algorithm before storage.
      *
      * @param name     The name of the user.
-     * @param username The username of the user.
+     * @param username The username of the user, which should be unique.
      * @param password The user's password in plaintext.
-     * @return The newly created {@link Users} instance.
+     * @return The newly created {@link Users} instance representing the user.
+     * @throws IllegalArgumentException If a user with the provided username already exists.
      */
-    public Users createUser(String name, String username, String password) {
+    public Users createUser(String name, String username, String password) throws IllegalArgumentException {
+        if (userExists(username)) {
+            throw new IllegalArgumentException("A user with the provided username already exists.");
+        }
         Users user = new Users().setName(name)
                 .setUsername(username)
                 .setPassword(sha256(password));
@@ -57,6 +66,20 @@ public class DatabaseService {
         return user;
     }
 
+    public Tokens createToken(int userId, String ip) {
+        Tokens token = new Tokens()
+                .setUser(userId)
+                .setToken(generateToken())
+                .setIp(ip);
+        tokensDao.insert(token);
+        return token;
+    }
+
+
+    // endregion
+
+
+    // region util
     /**
      * Computes the SHA-256 hash of the given input string and returns it as a hexadecimal string.
      *
@@ -78,4 +101,14 @@ public class DatabaseService {
             return null;
         }
     }
+
+    /**
+     * Generates a random secure token.
+     *
+     * @return A random secure token as a String.
+     */
+    public String generateToken() {
+        return UUID.randomUUID().toString();
+    }
+    // endregion
 }
