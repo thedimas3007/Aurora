@@ -70,7 +70,7 @@ dependencyManagement {
     }
 }
 
-task codegen {
+tasks.register('codegen') {
     doLast {
         var host, schema, user, password
         if (!project.hasProperty("dbhost") || !project.hasProperty("dbschema") || !project.hasProperty("dbuser") || !project.hasProperty("dbpassword")) {
