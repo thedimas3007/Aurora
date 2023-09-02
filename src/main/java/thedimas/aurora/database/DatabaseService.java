@@ -11,8 +11,6 @@ import thedimas.aurora.database.gen.tables.pojos.Users;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.UUID;
 
 @Service
@@ -66,6 +64,13 @@ public class DatabaseService {
         return user;
     }
 
+    /**
+     * Creates a new token for a user with the provided user ID and IP address, and stores it in the database.
+     *
+     * @param userId The ID of the user for whom the token is created.
+     * @param ip     The IP address associated with the token.
+     * @return The newly created {@link Tokens} instance representing the token.
+     */
     public Tokens createToken(int userId, String ip) {
         Tokens token = new Tokens()
                 .setUser(userId)
