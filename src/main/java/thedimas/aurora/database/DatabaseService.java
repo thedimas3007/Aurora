@@ -64,6 +64,10 @@ public class DatabaseService {
         return user;
     }
 
+    public Users getUser(String username) {
+        return usersDao.fetchOneByUsername(username);
+    }
+
     /**
      * Creates a new token for a user with the provided user ID and IP address, and stores it in the database.
      *
@@ -79,8 +83,6 @@ public class DatabaseService {
         tokensDao.insert(token);
         return token;
     }
-
-
     // endregion
 
 

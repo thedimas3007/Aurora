@@ -7,7 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thedimas.aurora.database.DatabaseService;
-import thedimas.aurora.database.gen.tables.pojos.Tokens;
+import thedimas.aurora.database.gen.tables.pojos.Users;
+import thedimas.aurora.response.ApiResponse;
 
 @RestController
 @RequestMapping(value = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -16,11 +17,21 @@ public class ClientController {
     private DatabaseService database;
 
     @GetMapping("/login")
-    public Tokens login(
-            @RequestParam(name = "user") int userId,
+    public ResponseEntity<?> login(
+            @RequestParam(name = "user") String login,
+            @RequestParam(name = "password") String password,
             HttpServletRequest request
     ) {
-        return database.createToken(userId, request.getRemoteAddr());
+        Users user = database.getUser(login);
+        if (user == null) {
+            return ApiController.error(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        if (user.getPassword().equals(database.sha256(password))) {
+            return ApiController.error(HttpStatus.FORBIDDEN, "Invalid password");
+        }
+
+        return ApiController.success(database.createToken(user.getId(), request.getRemoteAddr()), "User logged in successfully");
     }
 
     @GetMapping("/register")
