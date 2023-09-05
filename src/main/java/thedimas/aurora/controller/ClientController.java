@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import thedimas.aurora.database.DatabaseService;
 import thedimas.aurora.database.gen.tables.pojos.Users;
-import thedimas.aurora.response.ApiResponse;
 
 @RestController
 @RequestMapping(value = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,17 +33,16 @@ public class ClientController {
         return ApiController.success(database.createToken(user.getId(), request.getRemoteAddr()), "User logged in successfully");
     }
 
-    @GetMapping("/register")
+    @PostMapping("/register")
     public ResponseEntity<?> register(
             @RequestParam(name = "name") String name,
             @RequestParam(name = "username") String username,
             @RequestParam(name = "password") String password
     ) {
         if (database.userExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Username is already in use");
+            return ApiController.error(HttpStatus.CONFLICT, "Username is already in use");
         }
 
-        return ResponseEntity.ok(database.createUser(name, username, password));
+        return ApiController.success(database.createUser(name, username, password), "User has been successfully created");
     }
 }
