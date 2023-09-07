@@ -7,15 +7,20 @@ import org.jooq.meta.jaxb.*
 import org.jooq.tools.StringUtils
 
 buildscript {
+    ext {
+        jooqVersion = '3.17.0'
+        mysqlVersion = '8.0.30'
+    }
+
     repositories {
         mavenCentral()
     }
 
     dependencies {
-        classpath "org.jooq:jooq:3.17.0" // older version due to older MySQL version on the host
-        classpath "org.jooq:jooq-codegen:3.17.0"
-        classpath "org.jooq:jooq-meta:3.17.0"
-        classpath "mysql:mysql-connector-java:8.0.30"
+        classpath "org.jooq:jooq:$jooqVersion" // older version due to older MySQL version on the host
+        classpath "org.jooq:jooq-codegen:$jooqVersion"
+        classpath "org.jooq:jooq-meta:$jooqVersion"
+        classpath "mysql:mysql-connector-java:$mysqlVersion"
     }
 }
 
