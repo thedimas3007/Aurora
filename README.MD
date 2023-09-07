@@ -5,17 +5,16 @@ Made with :heart:
 
 ## Building
 
-To build runnable jar run `./gradlew bootJar` / `gradlew.bat bootJar`.
-
-To generate code for the database use `codegen` task. 
-Before generating do not forget to put necessary database information into `database.json`.
-See `database.example.json`
+1. Make copy of `database.example.json` named `database.json` with your database credentials
+2. Generate code for the database using `codegen` task
+3. To build runnable jar run `./gradlew bootJar` / `gradlew.bat bootJar`.
 
 ## TODO
 
 ### Server
 - [ ] Improve server
 - [ ] Make API error status codes
+- [ ] Server API docs
 
 ### Client
 - [ ] Java multiplatform client
