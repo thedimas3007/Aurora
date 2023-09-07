@@ -13,7 +13,7 @@ import thedimas.aurora.factory.JsonPropertySourceFactory;
 @ConfigurationProperties
 @Data
 public class DatabaseConfig {
-    private String host, schema, username, password;
+    private String host, schema, user, password;
 
     /**
      * Gets the connection URL for the database.

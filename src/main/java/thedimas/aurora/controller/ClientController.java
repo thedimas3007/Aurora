@@ -31,7 +31,7 @@ public class ClientController {
             return ApiController.error(HttpStatus.FORBIDDEN, "Invalid password");
         }
 
-        return ApiController.success(database.createToken(user.getId(), request.getRemoteAddr()), "User logged in successfully");
+        return ApiController.success("User logged in successfully", database.createToken(user.getId(), request.getRemoteAddr()));
     }
 
     @GetMapping("/register")
@@ -41,10 +41,9 @@ public class ClientController {
             @RequestParam(name = "password") String password
     ) {
         if (database.userExists(username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Username is already in use");
+            return ApiController.error(HttpStatus.CONFLICT, "User already exists");
         }
 
-        return ResponseEntity.ok(database.createUser(name, username, password));
+        return ApiController.success(HttpStatus.CREATED, "User successfully created", database.createUser(name, username, password));
     }
 }
