@@ -15,7 +15,7 @@ public class DatabaseDataSource {
     public HikariDataSource getDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(config.getConnectionUrl());
-        hikariConfig.setUsername(config.getUser());
+        hikariConfig.setUsername(config.getLogin());
         hikariConfig.setPassword(config.getPassword());
         return new HikariDataSource(hikariConfig);
     }
