@@ -1,11 +1,14 @@
 package thedimas.aurora.database;
 
+import lombok.Getter;
 import lombok.extern.apachecommons.CommonsLog;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import thedimas.aurora.database.gen.Tables;
 import thedimas.aurora.database.gen.tables.daos.*;
+import thedimas.aurora.database.gen.tables.pojos.Chats;
+import thedimas.aurora.database.gen.tables.pojos.Messages;
 import thedimas.aurora.database.gen.tables.pojos.Tokens;
 import thedimas.aurora.database.gen.tables.pojos.Users;
 
@@ -15,6 +18,7 @@ import java.util.UUID;
 
 @Service
 @CommonsLog
+@Getter
 @SuppressWarnings("unused")
 public class DatabaseService {
     private final ChatsDao chatsDao;
@@ -64,9 +68,27 @@ public class DatabaseService {
         return user;
     }
 
+
+    /**
+     * Retrieves a user from the database by their username.
+     *
+     * @param username The username of the user to retrieve.
+     * @return The {@link Users} instance representing the user, or {@code null} if the user is not found.
+     */
     public Users getUser(String username) {
         return usersDao.fetchOneByUsername(username);
     }
+
+    /**
+     * Retrieves a user from the database by their ID.
+     *
+     * @param userId The ID of the user to retrieve.
+     * @return The {@link Users} instance representing the user, or {@code null} if the user is not found.
+     */
+    public Users getUser(int userId) {
+        return usersDao.fetchOneById(userId);
+    }
+
 
     /**
      * Creates a new token for a user with the provided user ID and IP address, and stores it in the database.
@@ -82,6 +104,59 @@ public class DatabaseService {
                 .setIp(ip);
         tokensDao.insert(token);
         return token;
+    }
+
+    /**
+     * Retrieves a token from the database based on the provided token string.
+     *
+     * @param token The token string used to look up the token.
+     * @return The {@link Tokens} instance representing the token, or {@code null} if the token is not found.
+     */
+    public Tokens getToken(String token) {
+        return tokensDao.fetchOneByToken(token);
+    }
+    // endregion
+
+    // region chats and messages
+
+    /**
+     * Retrieves a chat from the database based on the provided chat ID.
+     *
+     * @param id The unique identifier of the chat to retrieve.
+     * @return The {@link Chats} instance representing the chat, or {@code null} if the chat is not found.
+     */
+    public Chats getChat(int id) {
+        return chatsDao.fetchOneById(id);
+    }
+
+    /**
+     * Creates a new message in the database with the provided sender ID, chat ID, and message content.
+     *
+     * @param senderId The ID of the user who sent the message.
+     * @param chatId   The ID of the chat where the message is sent.
+     * @param content  The content of the message.
+     * @return The newly created {@link Messages} instance representing the message.
+     */
+    public Messages createMessage(int senderId, int chatId, String content) {
+        Messages message = new Messages()
+                .setAuthor(senderId)
+                .setChat(chatId)
+                .setContent(content);
+        messagesDao.insert(message);
+        return message;
+    }
+
+    /**
+     * Creates and sends a new message in the database with the provided sender ID, chat ID, and message content.
+     * Alias for {@link #createMessage(int, int, String)}.
+     *
+     * @param senderId The ID of the user who sent the message.
+     * @param chatId   The ID of the chat where the message is sent.
+     * @param content  The content of the message.
+     * @return The newly created {@link Messages} instance representing the message.
+     */
+    public Messages sendMessage(int senderId, int chatId, String content) {
+        return createMessage(senderId, chatId, content);
     }
     // endregion
 
