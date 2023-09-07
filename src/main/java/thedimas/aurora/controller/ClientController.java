@@ -30,7 +30,7 @@ public class ClientController {
             return ApiController.error(HttpStatus.FORBIDDEN, "Invalid password");
         }
 
-        return ApiController.success(database.createToken(user.getId(), request.getRemoteAddr()), "User logged in successfully");
+        return ApiController.success("User logged in successfully", database.createToken(user.getId(), request.getRemoteAddr()));
     }
 
     @PostMapping("/register")
@@ -43,6 +43,6 @@ public class ClientController {
             return ApiController.error(HttpStatus.CONFLICT, "Username is already in use");
         }
 
-        return ApiController.success(database.createUser(name, username, password), "User has been successfully created");
+        return ApiController.success(HttpStatus.CREATED, "User has successfully been created", database.createUser(name, username, password));
     }
 }

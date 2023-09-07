@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 @Configuration
 public class JooqConfiguration {
     @Autowired
-    private DataSource dataSource;
+    private HikariDataSource dataSource;
 
     @Bean
     public org.jooq.Configuration getConfiguration() {

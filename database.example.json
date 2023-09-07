@@ -1,6 +1,6 @@
 {
   "host": "ip",
   "schema": "schema",
-  "username": "user",
+  "user": "username",
   "password": "password"
 }
